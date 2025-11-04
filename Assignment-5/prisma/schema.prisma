@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-py"
+  interface = "asyncio"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Company {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  location String
+  products Product[]   // One-to-many relation
+}
+
+model Product {
+  id         Int      @id @default(autoincrement())
+  name       String
+  price      Float
+  stock      Int
+  company_id  Int
+  company    Company   @relation(fields: [company_id], references: [id])
+
+  @@unique([name, company_id])
+}
